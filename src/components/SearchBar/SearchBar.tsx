@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { invoke } from '@tauri-apps/api/core';
 import './SearchBar.css';
+import LightningIcon from './LightningIcon';
 
 type SearchResult = {
   path: string;
@@ -112,15 +113,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <>
-      {isVisible && (
-        <div 
-          className="search-overlay" 
-          onClick={() => setIsVisible(false)}
-          onContextMenu={(e) => e.preventDefault()}
-        />
-      )}
-      
+    <>      
       <div className={`search-container ${isVisible ? 'visible' : ''}`}>
         <div className="search-input-container">
           <svg className="search-icon" viewBox="0 0 24 24">
@@ -131,7 +124,7 @@ const SearchBar: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search files, folders, and apps..."
+            placeholder="Speedy’s on it ... Just type! ⚡"
             className="search-input"
             aria-label="Search input"
           />
@@ -178,8 +171,6 @@ const SearchBar: React.FC = () => {
                 </div>
                 {selectedIndex === index && (
                   <div className="enter-hint" aria-hidden="true">
-                    <span>Open</span>
-                    <span className="enter-icon">⏎</span>
                   </div>
                 )}
               </div>
@@ -188,17 +179,11 @@ const SearchBar: React.FC = () => {
         )}
 
         {!isSearching && results.length === 0 && searchQuery.length >= 2 && (
-          <div className="no-results">
+          <div className="search-result-item">
             No results found for "{searchQuery}"
           </div>
         )}
       </div>
-
-      {/* {!isVisible && (
-        <div className="shortcut-hint">
-          Press <kbd>Space</kbd> to search
-        </div>
-      )} */}
     </>
   );
 };

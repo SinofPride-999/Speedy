@@ -1,12 +1,32 @@
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* App.css */
 .App {
   background: transparent !important;
 }
 
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh; /* Changed from 100vh to 100dvh */
+  padding: 20px; /* Add some padding to prevent edge touching */
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+.stuffs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Match search container width */
+}
+
 .shortcut-hint {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 20px;
   background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 8px 16px;

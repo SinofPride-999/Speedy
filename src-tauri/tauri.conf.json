@@ -14,7 +14,7 @@
       {
         "title": "Speedy",
         "width": 600,
-        "height": 500,
+        "height": 600,
         "resizable": false,
         "decorations": false,
         "transparent": true,
@@ -24,7 +24,7 @@
         "alwaysOnTop": true,
         "center": true,
         "shadow": false,
-        "theme": "Dark"
+        "theme": "Light"
       }
     ],
     "security": {
