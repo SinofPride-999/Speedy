@@ -1,3 +1,29 @@
 .App {
   background: transparent !important;
 }
+
+.shortcut-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.shortcut-hint:hover {
+  opacity: 1;
+}
+
+.shortcut-hint kbd {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin: 0 2px;
+}
