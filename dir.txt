@@ -1,0 +1,10 @@
+/speedy
+├── src/
+│   ├── App.tsx
+|
+├── src-tauri/
+│   ├── capabilities/
+│       ├── default.json # permisions
+│   ├── tauri.conf.json    # Minimal required config
+├── package.json
+└── ...

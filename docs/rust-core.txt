@@ -1,0 +1,6 @@
+What The Rust Code Needs To Do
+  Your Rust backend will:
+    1. Access the file system (e.g., scan directories, index files)
+    2. Search file names quickly (and possibly contents)
+    3. Communicate with your React frontend (via Tauri)
+    4. Return search results to display in the UI

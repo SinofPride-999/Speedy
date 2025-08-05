@@ -1,0 +1,62 @@
+My Speedy Search App Story
+  Yo, so here's the deal, 
+  I was a Mac user for so long and got way too used to Spotlight. 
+  That instant search? The clean results? Perfect. 
+  Then life happened, I had to switch back to Windows, and oh boy...
+
+
+Windows Search Sucks (Let's Be Real)
+  File Explorer search? Basically a loading bar simulator.
+  Cortana? More like Cor-tortoise (and now it's dead anyway).
+  Start menu search? Decent, but still feels clunky.
+
+I missed just hitting ⌘ + Space, typing a few letters, 
+and boom—instantly finding anything. So instead of suffering, 
+I thought:
+"Fine, I’ll Build It Myself."
+
+6 days later, Speedy was born.
+
+What Makes Speedy Different?
+  It Actually Works
+    No waiting for indexing to finish.
+    No random delays.
+    Just spacebar → type → results appear instantly.
+
+  Looks & Feels Like Spotlight (But Better)
+    Clean, blurry transparent background.
+    Smooth animations.
+    Dark/light mode that just works.
+
+  Remembers What You Use Most
+    The more you open something, the higher it shows up.
+    No weird Bing suggestions or ads (looking at you, Windows).
+
+  Keyboard-First (Like It Should Be)
+    Space-bar → Open search.
+    Arrows → Navigate.
+    Enter → Open.
+    Escape → Close.
+    No mouse needed (but you can click if you want).
+
+
+How I Built It
+I used:
+  - Tauri (Rust + Web tech, so it’s fast and tiny).
+  - React (for the smooth UI).
+  - SQLite (to store file locations without bloat).
+
+The magic happens in Rust—it scans your files once, 
+remembers them, and then searches stupid fast. 
+No cloud crap, no telemetry, just your files, 
+your search, instantly.
+
+Why This Rocks for Me (And Maybe You)
+  No more waiting for Windows search to "think."
+  No more digging through folders like it’s 2005.
+  Just hit space, type, open. Done.
+
+It’s the app I needed because Windows sure wasn’t giving it to me. 
+And now? I don’t miss Mac at all.
+
+Mission accomplished.
