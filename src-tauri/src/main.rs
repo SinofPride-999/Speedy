@@ -9,6 +9,7 @@ use std::process::Command;
 use std::path::PathBuf;
 use std::ffi::OsStr;
 use std::env;
+// use windows_shortcuts::Shortcut;
 
 struct AppState {
     db: Mutex<Connection>,
@@ -110,32 +111,73 @@ async fn index_applications(app: tauri::AppHandle) -> Result<usize, String> {
 
     #[cfg(target_os = "windows")]
     {
-        let start_menu_paths = vec![
+        // Standard Windows application locations
+        let app_paths = vec![
             PathBuf::from(r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs"),
             PathBuf::from(r"C:\Users\All Users\Microsoft\Windows\Start Menu\Programs"),
+            PathBuf::from(r"C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"),
+            PathBuf::from(r"C:\Program Files"),
+            PathBuf::from(r"C:\Program Files (x86)"),
+            PathBuf::from(r"C:\Windows\System32"),
         ];
-        
-        for path in start_menu_paths {
-            if let Ok(entries) = std::fs::read_dir(&path) {
-                for entry in entries.filter_map(|e| e.ok()) {
-                    if let Ok(file_type) = entry.file_type() {
-                        if file_type.is_file() {
-                            if let Some(ext) = entry.path().extension().and_then(OsStr::to_str) {
-                                if ext == "lnk" {
-                                    if let Some(name) = entry.file_name().to_str() {
-                                        let path_str = entry.path().to_string_lossy().into_owned();
-                                        
-                                        tx.execute(
-                                            "INSERT OR REPLACE INTO applications 
-                                            (path, name, last_used, times_used) 
-                                            VALUES (?1, ?2, strftime('%s','now'), 0)",
-                                            params![path_str, name],
-                                        ).map_err(|e| e.to_string())?;
-                                        
-                                        count += 1;
-                                    }
-                                }
-                            }
+
+        // Predefined system applications
+        let system_apps = vec![
+            ("cmd", "Command Prompt", r"C:\Windows\System32\cmd.exe"),
+            ("powershell", "PowerShell", r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"),
+            ("notepad", "Notepad", r"C:\Windows\System32\notepad.exe"),
+            ("calc", "Calculator", r"C:\Windows\System32\calc.exe"),
+            ("explorer", "File Explorer", "explorer.exe"),
+            ("mspaint", "Paint", r"C:\Windows\System32\mspaint.exe"),
+            ("wordpad", "WordPad", r"C:\Program Files\Windows NT\Accessories\wordpad.exe"),
+
+            // Newly requested ones
+            ("vscode", "Visual Studio Code", r"C:\Users\user\AppData\Local\Programs\Microsoft VS Code\Code.exe"),
+            ("gitbash", "Git Bash", r"C:\Program Files\Git\git-bash.exe"),
+            ("chrome", "Google Chrome", r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+            ("snip", "Snip & Sketch", r"ms-screenclip:"), // this is a URI protocol
+            ("settings", "Settings", r"ms-settings:"), // opens Windows settings
+            ("whatsapp", "WhatsApp", r"C:\Users\user\AppData\Local\WhatsApp\WhatsApp.exe"),
+
+            // Other common ones (feel free to remove or update)
+            ("edge", "Microsoft Edge", r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
+            ("teams", "Microsoft Teams", r"C:\Users\<USERNAME>\AppData\Local\Microsoft\Teams\Update.exe"),
+            ("onenote", "OneNote", r"C:\Program Files\Microsoft Office\root\Office16\ONENOTE.EXE"),
+            ("excel", "Microsoft Excel", r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"),
+            ("word", "Microsoft Word", r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"),
+        ];
+
+        // Add system apps to database
+        for (_, display_name, path) in system_apps {
+            tx.execute(
+                "INSERT OR REPLACE INTO applications 
+                (path, name, last_used, times_used) 
+                VALUES (?1, ?2, strftime('%s','now'), 0)",
+                params![path, display_name],
+            ).map_err(|e| e.to_string())?;
+            count += 1;
+        }
+
+        // Index applications from standard locations
+        for base_path in app_paths {
+            for entry in WalkDir::new(base_path).max_depth(5).into_iter().filter_map(|e| e.ok()) {
+                let path = entry.path();
+                if path.is_file() {
+                    if let Some(ext) = path.extension().and_then(OsStr::to_str) {
+                        if ext == "exe" { // Just look for .exe files for now
+                            let name = path.file_stem()
+                                .and_then(OsStr::to_str)
+                                .unwrap_or_default()
+                                .to_string();
+
+                            tx.execute(
+                                "INSERT OR REPLACE INTO applications 
+                                (path, name, last_used, times_used) 
+                                VALUES (?1, ?2, strftime('%s','now'), 0)",
+                                params![path.to_string_lossy().into_owned(), name],
+                            ).map_err(|e| e.to_string())?;
+                            
+                            count += 1;
                         }
                     }
                 }
@@ -309,24 +351,9 @@ async fn open_path(path: String, app: tauri::AppHandle) -> Result<(), String> {
 fn launch_app(path: String) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
+        // Simple launch command that works for both .exe and system commands
         Command::new("cmd")
             .args(&["/C", "start", "", &path])
-            .spawn()
-            .map_err(|e| e.to_string())?;
-    }
-    
-    #[cfg(target_os = "macos")]
-    {
-        Command::new("open")
-            .arg(&path)
-            .spawn()
-            .map_err(|e| e.to_string())?;
-    }
-    
-    #[cfg(target_os = "linux")]
-    {
-        Command::new("xdg-open")
-            .arg(&path)
             .spawn()
             .map_err(|e| e.to_string())?;
     }
