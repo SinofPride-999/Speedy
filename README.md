@@ -81,7 +81,3 @@ Because **searching should feel instant**—not like loading a webpage from 2006
     npm run tauri dev
 
 ---
-
-## 📄 License
-
-MIT © [Your Name or Username]
