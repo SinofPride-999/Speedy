@@ -113,13 +113,17 @@ const SearchBar: React.FC = () => {
   const handleResultClick = async (result: SearchResult) => {
     try {
         if (result.type === 'app') {
+            // For applications, use launch_app
             await invoke('launch_app', { path: result.path });
         } else {
+            // For files/folders, use open_path
             await invoke('open_path', { path: result.path });
         }
         setIsVisible(false);
     } catch (error) {
         console.error('Failed to open:', error);
+        // Show error to user
+        alert(`Failed to open: ${error}`);
     }
   };
 
