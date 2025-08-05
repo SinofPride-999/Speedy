@@ -40,36 +40,43 @@ const SearchBar: React.FC = () => {
     if (query.length < 2) return [];
     
     try {
-      return await invoke<SearchResult[]>('search', { query });
+        // Call the unified search command instead of separate ones
+        const results = await invoke<SearchResult[]>('search', { query });
+        return results;
     } catch (error) {
-      console.error('Search error:', error);
-      return [];
+        console.error('Search error:', error);
+        return [];
     }
   };
 
   useEffect(() => {
     if (debounceTimer.current) {
-      window.clearTimeout(debounceTimer.current);
+        clearTimeout(debounceTimer.current);
     }
 
     if (searchQuery.trim() === '') {
-      setResults([]);
-      setSelectedIndex(-1);
-      return;
+        setResults([]);
+        setSelectedIndex(-1);
+        return;
     }
 
-    debounceTimer.current = window.setTimeout(async () => {
-      setIsSearching(true);
-      const results = await performSearch(searchQuery);
-      setResults(results.slice(0, 8));
-      setSelectedIndex(-1);
-      setIsSearching(false);
+    debounceTimer.current = setTimeout(async () => {
+        setIsSearching(true);
+        try {
+            const searchResults = await performSearch(searchQuery);
+            setResults(searchResults);
+        } catch (error) {
+            console.error('Search failed:', error);
+            setResults([]);
+        } finally {
+            setIsSearching(false);
+        }
     }, 200);
 
     return () => {
-      if (debounceTimer.current) {
-        window.clearTimeout(debounceTimer.current);
-      }
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
     };
   }, [searchQuery]);
 
@@ -105,10 +112,14 @@ const SearchBar: React.FC = () => {
 
   const handleResultClick = async (result: SearchResult) => {
     try {
-      await invoke('open_path', { path: result.path });
-      setIsVisible(false);
+        if (result.type === 'app') {
+            await invoke('launch_app', { path: result.path });
+        } else {
+            await invoke('open_path', { path: result.path });
+        }
+        setIsVisible(false);
     } catch (error) {
-      console.error('Failed to open:', error);
+        console.error('Failed to open:', error);
     }
   };
 

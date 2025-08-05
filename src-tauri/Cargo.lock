@@ -3816,6 +3816,7 @@ name = "speedy"
 version = "0.1.0"
 dependencies = [
  "crossbeam-channel",
+ "glob",
  "log",
  "notify-rust",
  "num_cpus",
