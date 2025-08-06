@@ -131,7 +131,6 @@ async fn index_applications(app: tauri::AppHandle) -> Result<usize, String> {
             ("mspaint", "Paint", r"C:\Windows\System32\mspaint.exe"),
             ("wordpad", "WordPad", r"C:\Program Files\Windows NT\Accessories\wordpad.exe"),
 
-            // Newly requested ones
             ("vscode", "Visual Studio Code", r"C:\Users\user\AppData\Local\Programs\Microsoft VS Code\Code.exe"),
             ("gitbash", "Git Bash", r"C:\Program Files\Git\git-bash.exe"),
             ("chrome", "Google Chrome", r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
@@ -139,9 +138,8 @@ async fn index_applications(app: tauri::AppHandle) -> Result<usize, String> {
             ("settings", "Settings", r"ms-settings:"), // opens Windows settings
             ("whatsapp", "WhatsApp", r"C:\Users\user\AppData\Local\WhatsApp\WhatsApp.exe"),
 
-            // Other common ones (feel free to remove or update)
             ("edge", "Microsoft Edge", r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
-            ("teams", "Microsoft Teams", r"C:\Users\<USERNAME>\AppData\Local\Microsoft\Teams\Update.exe"),
+            ("teams", "Microsoft Teams", r"C:\Users\user\AppData\Local\Microsoft\Teams\Update.exe"),
             ("onenote", "OneNote", r"C:\Program Files\Microsoft Office\root\Office16\ONENOTE.EXE"),
             ("excel", "Microsoft Excel", r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"),
             ("word", "Microsoft Word", r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"),
