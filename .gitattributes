@@ -1,0 +1,11 @@
+# Ignore everything that is not Rust
+*.ts linguist-detectable=false
+*.json linguist-detectable=false
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+
+# Tauri config sometimes gets misdetected as Makefile
+src-tauri/** linguist-detectable=true
+
+# Force Rust to be recognized
+*.rs linguist-detectable=true
